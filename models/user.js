@@ -5,6 +5,10 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
   email: { type: String, unique: true },
+  name: String,
+  profileImg: String,
+  googleID: String,
+  facebookID: String,
   password: String
 });
 
@@ -14,11 +18,14 @@ userSchema.pre("save", function(next) {
     if (err) {
       return next(err);
     }
-    bcrypt.hash(user.password, salt, null, function(err, hash) {
-      if (err) return err;
-      user.password = hash;
-      next();
-    });
+    if (user.password) {
+      bcrypt.hash(user.password, salt, null, function(err, hash) {
+        if (err) return err;
+        user.password = hash;
+        next();
+      });
+    }
+    next();
   });
 });
 
